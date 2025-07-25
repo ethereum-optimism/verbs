@@ -1,4 +1,7 @@
+export { ChainManager } from './services/chainManager.js'
 export type {
+  ChainBalance,
+  ChainConfig,
   CreateWalletResponse,
   ErrorResponse,
   GetAllWalletsOptions,

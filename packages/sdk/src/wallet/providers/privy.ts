@@ -1,11 +1,12 @@
 import { PrivyClient } from '@privy-io/server-auth'
 import type { Address } from 'viem'
 
+import type { ChainManager } from '@/services/chainManager.js'
 import type {
   GetAllWalletsOptions,
   WalletProvider,
-} from '../../types/wallet.js'
-import { Wallet } from '../index.js'
+} from '@/types/wallet.js'
+import { Wallet } from '@/index.js'
 
 /**
  * Privy wallet provider implementation
@@ -13,14 +14,17 @@ import { Wallet } from '../index.js'
  */
 export class PrivyWalletProvider implements WalletProvider {
   private privy: PrivyClient
+  private chainManager: ChainManager
 
   /**
    * Create a new Privy wallet provider
    * @param appId - Privy application ID
    * @param appSecret - Privy application secret
+   * @param chainManager - Chain manager service for blockchain operations
    */
-  constructor(appId: string, appSecret: string) {
+  constructor(appId: string, appSecret: string, chainManager: ChainManager) {
     this.privy = new PrivyClient(appId, appSecret)
+    this.chainManager = chainManager
   }
 
   /**
@@ -36,8 +40,11 @@ export class PrivyWalletProvider implements WalletProvider {
         chainType: 'ethereum',
       })
 
-      const walletInstance = new Wallet(wallet.id)
-      walletInstance.address = wallet.address as Address
+      const walletInstance = new Wallet(
+        wallet.id,
+        wallet.address as Address,
+        this.chainManager,
+      )
       return walletInstance
     } catch {
       throw new Error(`Failed to create wallet for user ${userId}`)
@@ -55,7 +62,11 @@ export class PrivyWalletProvider implements WalletProvider {
       // TODO: Implement proper user-to-wallet lookup
       const wallet = await this.privy.walletApi.getWallet({ id: userId })
 
-      const walletInstance = new Wallet(wallet.id)
+      const walletInstance = new Wallet(
+        wallet.id,
+        wallet.address as Address,
+        this.chainManager,
+      )
       walletInstance.address = wallet.address as Address
       return walletInstance
     } catch {
@@ -77,7 +88,11 @@ export class PrivyWalletProvider implements WalletProvider {
       })
 
       return response.data.map((wallet) => {
-        const walletInstance = new Wallet(wallet.id)
+        const walletInstance = new Wallet(
+          wallet.id,
+          wallet.address as Address,
+          this.chainManager,
+        )
         walletInstance.address = wallet.address as Address
         return walletInstance
       })

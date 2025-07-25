@@ -1,3 +1,4 @@
+import { SUPPORTED_CHAINS } from '@/constants/supportedChains.js'
 import type { GetAllWalletsOptions, Wallet } from './wallet.js'
 
 /**
@@ -32,6 +33,21 @@ export interface VerbsInterface {
 export interface VerbsConfig {
   /** Wallet provider configuration */
   wallet: WalletConfig
+  /** Supported chain configurations */
+  chains?: ChainConfig[]
+}
+
+/**
+ * Chain configuration
+ * @description Configuration for each supported chain
+ */
+export interface ChainConfig {
+  /** Chain ID */
+  chainId: (typeof SUPPORTED_CHAINS)[number]['id']
+  /** RPC URL for the chain */
+  rpcUrl: string
+  /** Optional chain name for display */
+  name?: string
 }
 
 /**

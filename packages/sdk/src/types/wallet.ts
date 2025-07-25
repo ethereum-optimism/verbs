@@ -48,13 +48,37 @@ export interface GetAllWalletsOptions {
 }
 
 /**
+ * Chain balance information
+ * @description Balance information for a specific chain
+ */
+export interface ChainBalance {
+  /** Chain ID */
+  chainId: number
+  /** USDC balance in wei */
+  balance: bigint
+}
+
+/**
  * Wallet verbs/actions
  * @description Available actions that can be performed on a wallet
  */
 export type WalletVerbs = {
   /**
-   * Get wallet balance
-   * @returns Promise resolving to wallet balance in wei
+   * Get USDC balance across all supported chains
+   * @returns Promise resolving to array of chain balances
    */
-  getBalance(): Promise<bigint>
+  getBalance(): Promise<ChainBalance[]>
+
+  /**
+   * Get total USDC balance across all chains
+   * @returns Promise resolving to total balance in wei
+   */
+  getTotalBalance(): Promise<bigint>
+
+  /**
+   * Get USDC balance for a specific chain
+   * @param chainId - Target chain ID
+   * @returns Promise resolving to balance in wei
+   */
+  getBalanceForChain(chainId: number): Promise<bigint>
 }
