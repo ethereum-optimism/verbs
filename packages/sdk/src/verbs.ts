@@ -1,6 +1,12 @@
+import { unichain } from 'viem/chains'
+
+import { ChainManager } from './services/chainManager.js'
 import type { VerbsConfig, VerbsInterface } from './types/verbs.js'
-import type { GetAllWalletsOptions, WalletProvider } from './types/wallet.js'
-import type { Wallet } from './wallet/index.js'
+import type {
+  GetAllWalletsOptions,
+  Wallet,
+  WalletProvider,
+} from './types/wallet.js'
 import { PrivyWalletProvider } from './wallet/providers/privy.js'
 
 /**
@@ -13,8 +19,16 @@ export class Verbs implements VerbsInterface {
   getAllWallets!: (options?: GetAllWalletsOptions) => Promise<Wallet[]>
 
   private walletProvider: WalletProvider
+  private chainManager: ChainManager
 
   constructor(config: VerbsConfig) {
+    this.chainManager = new ChainManager([
+      {
+        chainId: unichain.id,
+        rpcUrl: unichain.rpcUrls.default.http[0],
+        name: unichain.name,
+      },
+    ])
     this.walletProvider = this.createWalletProvider(config)
 
     // Delegate wallet methods to wallet provider
@@ -32,7 +46,11 @@ export class Verbs implements VerbsInterface {
 
     switch (wallet.type) {
       case 'privy':
-        return new PrivyWalletProvider(wallet.appId, wallet.appSecret)
+        return new PrivyWalletProvider(
+          wallet.appId,
+          wallet.appSecret,
+          this.chainManager, // Pass the ChainManager instead of entire Verbs instance
+        )
       default:
         throw new Error(`Unsupported wallet provider type: ${wallet.type}`)
     }
