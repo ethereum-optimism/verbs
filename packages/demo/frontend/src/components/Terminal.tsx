@@ -5,6 +5,7 @@ import type {
 } from '@eth-optimism/verbs-sdk'
 import VerbsLogo from './VerbsLogo'
 import { verbsApi } from '../api/verbsApi'
+import figlet from 'figlet'
 
 interface TerminalLine {
   id: string
@@ -59,57 +60,75 @@ const Terminal = () => {
 
   // Initialize with welcome message and run help command
   useEffect(() => {
-    const welcomeLines: TerminalLine[] = [
-      {
-        id: 'welcome-ascii',
-        type: 'success',
-        content: `
+    const initializeTerminal = async () => {
+      // Generate VERBS ASCII art using figlet with fallback to original
+      let verbsAscii: string
+      try {
+        verbsAscii = figlet.textSync('VERBS', {
+          font: 'Standard',
+          horizontalLayout: 'default',
+          verticalLayout: 'default',
+        })
+      } catch (error) {
+        console.warn('Figlet failed, using fallback ASCII:', error)
+        // Fallback to original ASCII art
+        verbsAscii = `
 ██╗   ██╗ ███████╗ ██████╗  ██████╗  ███████╗
 ██║   ██║ ██╔════╝ ██╔══██╗ ██╔══██╗ ██╔════╝
 ██║   ██║ █████╗   ██████╔╝ ██████╔╝ ███████╗
 ╚██╗ ██╔╝ ██╔══╝   ██╔══██╗ ██╔══██╗ ╚════██║
  ╚████╔╝  ███████╗ ██║  ██║ ██████╔╝ ███████║
-  ╚═══╝   ╚══════╝ ╚═╝  ╚═╝ ╚═════╝  ╚══════╝`,
-        timestamp: new Date(),
-      },
-      {
-        id: 'welcome-7',
-        type: 'output',
-        content: '',
-        timestamp: new Date(),
-      },
-      {
-        id: 'welcome-8',
-        type: 'output',
-        content: '   Verbs library for the OP Stack',
-        timestamp: new Date(),
-      },
-      {
-        id: 'welcome-9',
-        type: 'output',
-        content: '',
-        timestamp: new Date(),
-      },
-      {
-        id: 'help-cmd',
-        type: 'input',
-        content: 'verbs: $ help',
-        timestamp: new Date(),
-      },
-      {
-        id: 'help-output',
-        type: 'output',
-        content: HELP_CONTENT,
-        timestamp: new Date(),
-      },
-      {
-        id: 'help-end',
-        type: 'output',
-        content: '',
-        timestamp: new Date(),
-      },
-    ]
-    setLines(welcomeLines)
+  ╚═══╝   ╚══════╝ ╚═╝  ╚═╝ ╚═════╝  ╚══════╝`
+      }
+
+      const welcomeLines: TerminalLine[] = [
+        {
+          id: 'welcome-ascii',
+          type: 'success',
+          content: verbsAscii,
+          timestamp: new Date(),
+        },
+        {
+          id: 'welcome-7',
+          type: 'output',
+          content: '',
+          timestamp: new Date(),
+        },
+        {
+          id: 'welcome-8',
+          type: 'output',
+          content: '   Verbs library for the OP Stack',
+          timestamp: new Date(),
+        },
+        {
+          id: 'welcome-9',
+          type: 'output',
+          content: '',
+          timestamp: new Date(),
+        },
+        {
+          id: 'help-cmd',
+          type: 'input',
+          content: 'verbs: $ help',
+          timestamp: new Date(),
+        },
+        {
+          id: 'help-output',
+          type: 'output',
+          content: HELP_CONTENT,
+          timestamp: new Date(),
+        },
+        {
+          id: 'help-end',
+          type: 'output',
+          content: '',
+          timestamp: new Date(),
+        },
+      ]
+      setLines(welcomeLines)
+    }
+
+    initializeTerminal()
   }, [])
 
   const createWallet = async (
@@ -410,10 +429,13 @@ ${walletList}`,
                 line.id === 'welcome-ascii'
                   ? {
                       fontFamily:
-                        'JetBrains Mono, Monaco, Menlo, Consolas, monospace',
+                        'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono", "Courier New", monospace',
                       color: '#b8bb26',
                       whiteSpace: 'pre',
-                      lineHeight: '1.2',
+                      lineHeight: '1.0',
+                      letterSpacing: '0',
+                      fontVariantLigatures: 'none',
+                      fontFeatureSettings: '"liga" 0',
                       margin: 0,
                       padding: 0,
                       border: 'none',
