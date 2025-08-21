@@ -1,3 +1,4 @@
+export type { SupportedChainId } from './constants/supportedChains.js'
 export { LendProvider, LendProviderMorpho } from './lend/index.js'
 export { getTokenAddress, SUPPORTED_TOKENS } from './supported/tokens.js'
 export type {
@@ -25,5 +26,5 @@ export type {
   WalletProvider,
 } from './types/index.js'
 export { initVerbs, Verbs } from './verbs.js'
-export { Wallet } from './wallet/index.js'
-export { WalletProviderPrivy } from './wallet/providers/privy.js'
+export { PrivyWallet } from './wallet/PrivyWallet.js'
+export { SmartWallet } from './wallet/SmartWallet.js'
