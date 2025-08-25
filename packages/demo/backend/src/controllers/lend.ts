@@ -1,6 +1,10 @@
+import { PrivyClient } from '@privy-io/server-auth'
 import type { Context } from 'hono'
 import type { Address } from 'viem'
+import { baseSepolia } from 'viem/chains'
 import { z } from 'zod'
+
+import { env } from '@/config/env.js'
 
 import { validateRequest } from '../helpers/validation.js'
 import * as lendService from '../services/lend.js'
@@ -117,25 +121,37 @@ export class LendController {
       const {
         body: { walletId, amount, token },
       } = validation.data
-      const lendTransaction = await lendService.deposit(walletId, amount, token)
+      const privyClient = new PrivyClient(
+        env.PRIVY_APP_ID,
+        env.PRIVY_APP_SECRET,
+      )
+      const lendTransaction = await lendService.deposit(
+        walletId,
+        amount,
+        token,
+        baseSepolia.id,
+      )
       const result = await lendService.executeLendTransaction(
         walletId,
         lendTransaction,
+        baseSepolia.id,
+        privyClient,
       )
 
       return c.json({
         transaction: {
           hash: result.hash,
-          amount: result.amount.toString(),
-          asset: result.asset,
-          marketId: result.marketId,
-          apy: result.apy,
-          timestamp: result.timestamp,
-          slippage: result.slippage,
-          transactionData: result.transactionData,
+          // amount: result.amount.toString(),
+          // asset: result.asset,
+          // marketId: result.marketId,
+          // apy: result.apy,
+          // timestamp: result.timestamp,
+          // slippage: result.slippage,
+          // transactionData: result.transactionData,
         },
       })
     } catch (error) {
+      console.error('Failed to deposit', error)
       return c.json(
         {
           error: 'Failed to deposit',

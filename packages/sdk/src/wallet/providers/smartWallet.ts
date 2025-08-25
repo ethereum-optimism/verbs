@@ -1,12 +1,6 @@
-import { chainById } from '@eth-optimism/viem/chains'
-import type { Address, Hash } from 'viem'
-import {
-  createWalletClient,
-  encodeAbiParameters,
-  http,
-  parseEventLogs,
-} from 'viem'
-import { privateKeyToAccount } from 'viem/accounts'
+import type { Address } from 'viem'
+import { encodeAbiParameters } from 'viem'
+import { toCoinbaseSmartAccount } from 'viem/account-abstraction'
 
 import { smartWalletFactoryAbi } from '@/abis/smartWalletFactory.js'
 import { smartWalletFactoryAddress } from '@/constants/addresses.js'
@@ -16,16 +10,16 @@ import { SmartWallet } from '@/wallet/SmartWallet.js'
 
 export class SmartWalletProvider {
   private chainManager: ChainManager
-  private deployerPrivateKey: Hash
+  private paymasterAndBundlerUrl: string
   private lendProvider: LendProvider
 
   constructor(
     chainManager: ChainManager,
-    deployerPrivateKey: Hash,
+    paymasterAndBundlerUrl: string,
     lendProvider: LendProvider,
   ) {
     this.chainManager = chainManager
-    this.deployerPrivateKey = deployerPrivateKey
+    this.paymasterAndBundlerUrl = paymasterAndBundlerUrl
     this.lendProvider = lendProvider
   }
 
@@ -36,37 +30,17 @@ export class SmartWalletProvider {
     // deploy the wallet on each chain in the chain manager
     const deployments = await Promise.all(
       this.chainManager.getSupportedChains().map(async (chainId) => {
-        const walletClient = createWalletClient({
-          chain: chainById[chainId],
-          transport: http(this.chainManager.getRpcUrl(chainId)),
-          account: privateKeyToAccount(this.deployerPrivateKey),
-        })
-        const encodedOwners = ownerAddresses.map((ownerAddress) =>
-          encodeAbiParameters([{ type: 'address' }], [ownerAddress]),
-        )
-        const tx = await walletClient.writeContract({
-          abi: smartWalletFactoryAbi,
-          address: smartWalletFactoryAddress,
-          functionName: 'createAccount',
-          args: [encodedOwners, nonce || 0n],
-        })
         const publicClient = this.chainManager.getPublicClient(chainId)
-        const receipt = await publicClient.waitForTransactionReceipt({
-          hash: tx,
+        const smartAccount = await toCoinbaseSmartAccount({
+          client: publicClient,
+          owners: ownerAddresses,
+          nonce,
+          // viem only supports the factory deployed by cb. if we wanted
+          // our own factory at some point we would need to work with them
+          // to update this to allow for other factories
+          version: '1.1',
         })
-        if (!receipt.status) {
-          throw new Error('Wallet deployment failed')
-        }
-        // parse logs
-        const logs = parseEventLogs({
-          abi: smartWalletFactoryAbi,
-          eventName: 'AccountCreated',
-          logs: receipt.logs,
-        })
-        return {
-          chainId,
-          address: logs[0].args.account,
-        }
+        return smartAccount
       }),
     )
     return new SmartWallet(
@@ -74,6 +48,7 @@ export class SmartWalletProvider {
       ownerAddresses,
       this.chainManager,
       this.lendProvider,
+      this.paymasterAndBundlerUrl,
     )
   }
 
@@ -101,6 +76,7 @@ export class SmartWalletProvider {
       owners,
       this.chainManager,
       this.lendProvider,
+      this.paymasterAndBundlerUrl,
     )
   }
 }
