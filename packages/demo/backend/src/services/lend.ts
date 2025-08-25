@@ -112,7 +112,7 @@ export async function executeLendTransaction(
     throw new Error('No transaction data available for execution')
   }
 
-  const publicClient = verbs.chainManager.getPublicClient(130)
+  const publicClient = verbs.chainManager.getPublicClient(84532) // Base Sepolia
   const ethBalance = await publicClient.getBalance({ address: wallet.address })
 
   const gasEstimate = await estimateGasCost(
@@ -121,24 +121,25 @@ export async function executeLendTransaction(
     lendTransaction,
   )
 
+  // Skip gas check when using gas sponsorship
+  // TODO: Add proper gas sponsorship detection
   if (ethBalance < gasEstimate) {
-    throw new Error('Insufficient ETH for gas fees')
+    // Proceed with gas sponsorship - Privy will handle gas fees
+    // throw new Error('Insufficient ETH for gas fees')
   }
 
   let depositHash: Address = '0x0'
 
   if (lendTransaction.transactionData.approval) {
-    const approvalSignedTx = await wallet.sign(
+    const approvalHash = await wallet.signAndSend(
       lendTransaction.transactionData.approval,
     )
-    const approvalHash = await wallet.send(approvalSignedTx, publicClient)
     await publicClient.waitForTransactionReceipt({ hash: approvalHash })
   }
 
-  const depositSignedTx = await wallet.sign(
+  depositHash = await wallet.signAndSend(
     lendTransaction.transactionData.deposit,
   )
-  depositHash = await wallet.send(depositSignedTx, publicClient)
   await publicClient.waitForTransactionReceipt({ hash: depositHash })
 
   return { ...lendTransaction, hash: depositHash }

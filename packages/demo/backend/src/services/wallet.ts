@@ -82,7 +82,7 @@ export async function getBalance(userId: string): Promise<TokenBalance[]> {
               totalFormattedBalance: formattedBalance,
               chainBalances: [
                 {
-                  chainId: 130 as const, // Unichain
+                  chainId: 84532 as const, // Base Sepolia
                   balance: vaultBalance.balance,
                   formattedBalance: formattedBalance,
                 },

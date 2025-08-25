@@ -1,5 +1,5 @@
 import { createPublicClient, http, type PublicClient } from 'viem'
-import { mainnet, unichain } from 'viem/chains'
+import { baseSepolia, mainnet, unichain } from 'viem/chains'
 
 import { LendProviderMorpho } from '@/lend/index.js'
 import { ChainManager } from '@/services/ChainManager.js'
@@ -30,8 +30,8 @@ export class Verbs implements VerbsInterface {
     this._chainManager = new ChainManager(
       config.chains || [
         {
-          chainId: unichain.id,
-          rpcUrl: unichain.rpcUrls.default.http[0],
+          chainId: baseSepolia.id,
+          rpcUrl: baseSepolia.rpcUrls.default.http[0],
         },
       ],
     )
@@ -39,16 +39,21 @@ export class Verbs implements VerbsInterface {
     if (config.lend) {
       // TODO: delete this code and just have the lend use the ChainManager
       const configChain = config.chains?.[0]
-      const chainId = configChain?.chainId || 130 // Default to Unichain
-      const chain = chainId === 130 ? unichain : mainnet
+      const chainId = configChain?.chainId || 84532 // Default to Base Sepolia
+      const chain =
+        chainId === 130 ? unichain : chainId === 84532 ? baseSepolia : mainnet
       const publicClient = createPublicClient({
         chain,
         transport: http(
-          configChain?.rpcUrl || unichain.rpcUrls.default.http[0],
+          configChain?.rpcUrl || baseSepolia.rpcUrls.default.http[0],
         ),
       }) as PublicClient
       if (config.lend.type === 'morpho') {
-        this.lendProvider = new LendProviderMorpho(config.lend, publicClient)
+        this.lendProvider = new LendProviderMorpho(
+          config.lend,
+          publicClient,
+          this._chainManager,
+        )
       } else {
         throw new Error(
           `Unsupported lending provider type: ${config.lend.type}`,

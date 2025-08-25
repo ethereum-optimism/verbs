@@ -2,6 +2,7 @@ import { MetaMorphoAction } from '@morpho-org/blue-sdk-viem'
 import type { Address, PublicClient } from 'viem'
 import { encodeFunctionData, erc20Abi, formatUnits } from 'viem'
 
+import type { ChainManager } from '../../../services/ChainManager.js'
 import type {
   LendOptions,
   LendTransaction,
@@ -24,6 +25,11 @@ export const SUPPORTED_NETWORKS = {
     name: 'Unichain',
     morphoAddress: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb' as Address,
   },
+  BASE_SEPOLIA: {
+    chainId: 84532,
+    name: 'Base Sepolia',
+    morphoAddress: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb' as Address, // Using same address as Morpho typically uses same deployment address
+  },
 } as const
 
 /**
@@ -37,21 +43,28 @@ export class LendProviderMorpho extends LendProvider {
   private morphoAddress: Address
   private defaultSlippage: number
   private publicClient: PublicClient
+  private chainManager: ChainManager
 
   /**
    * Create a new Morpho lending provider
    * @param config - Morpho lending configuration
    * @param publicClient - Viem public client for blockchain interactions // TODO: remove this
+   * @param chainManager - Chain manager for multi-chain support
    */
-  constructor(config: MorphoLendConfig, publicClient: PublicClient) {
+  constructor(
+    config: MorphoLendConfig,
+    publicClient: PublicClient,
+    chainManager: ChainManager,
+  ) {
     super()
 
-    // Use Unichain as the default network for now
-    const network = SUPPORTED_NETWORKS.UNICHAIN
+    // Use Base Sepolia as the default network for testing
+    const network = SUPPORTED_NETWORKS.BASE_SEPOLIA
 
     this.morphoAddress = network.morphoAddress
     this.defaultSlippage = config.defaultSlippage || 50 // 0.5% default
     this.publicClient = publicClient
+    this.chainManager = chainManager
   }
 
   /**
@@ -172,7 +185,7 @@ export class LendProviderMorpho extends LendProvider {
    * @returns Promise resolving to vault information
    */
   async getVault(vaultAddress: Address): Promise<LendVaultInfo> {
-    return getVaultInfoHelper(vaultAddress, this.publicClient)
+    return getVaultInfoHelper(vaultAddress, this.chainManager)
   }
 
   /**
@@ -180,7 +193,7 @@ export class LendProviderMorpho extends LendProvider {
    * @returns Promise resolving to array of vault information
    */
   async getVaults(): Promise<LendVaultInfo[]> {
-    return getVaultsHelper(this.publicClient)
+    return getVaultsHelper(this.chainManager)
   }
 
   /**

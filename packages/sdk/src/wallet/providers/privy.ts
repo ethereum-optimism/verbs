@@ -103,12 +103,12 @@ export class WalletProviderPrivy implements WalletProvider {
     try {
       const response = await this.privy.walletApi.ethereum.sendTransaction({
         walletId,
-        caip2: 'eip155:130', // Unichain
+        caip2: 'eip155:84532', // Base Sepolia
         transaction: {
           to: transactionData.to,
           data: transactionData.data as `0x${string}`,
           value: Number(transactionData.value),
-          chainId: 130, // Unichain
+          chainId: 84532, // Base Sepolia
         },
       })
 
@@ -116,6 +116,64 @@ export class WalletProviderPrivy implements WalletProvider {
     } catch (error) {
       throw new Error(
         `Failed to sign transaction for wallet ${walletId}: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+      )
+    }
+  }
+
+  /**
+   * Sign and send a transaction with gas sponsorship support
+   * @description Signs and sends a transaction using Privy's RPC API with gas sponsorship
+   * @param walletId - Wallet identifier
+   * @param transactionData - Transaction data to sign and send
+   * @returns Promise resolving to transaction hash
+   * @throws Error if transaction signing fails
+   */
+  async signAndSend(
+    walletId: string,
+    transactionData: TransactionData,
+  ): Promise<Hash> {
+    try {
+      // Try using the rpc method directly for gas sponsorship
+      const rpcPayload = {
+        method: 'eth_sendTransaction',
+        caip2: 'eip155:84532',
+        params: {
+          transaction: {
+            to: transactionData.to,
+            data: transactionData.data,
+            value: transactionData.value,
+          },
+        },
+        sponsor: true,
+      }
+
+      // Check if rpc method exists on walletApi for gas sponsorship
+      if ('rpc' in this.privy.walletApi && typeof this.privy.walletApi.rpc === 'function') {
+        const response = await (this.privy.walletApi as any).rpc({
+          walletId,
+          ...rpcPayload,
+        })
+        return response.data.hash as Hash
+      }
+
+      // Fallback to regular sendTransaction if rpc method not available
+      const response = await this.privy.walletApi.ethereum.sendTransaction({
+        walletId,
+        caip2: 'eip155:84532', // Base Sepolia
+        transaction: {
+          to: transactionData.to,
+          data: transactionData.data as `0x${string}`,
+          value: Number(transactionData.value),
+          chainId: 84532, // Base Sepolia
+        },
+      })
+
+      return response.hash as Hash
+    } catch (error) {
+      throw new Error(
+        `Failed to sign and send transaction for wallet ${walletId}: ${
           error instanceof Error ? error.message : 'Unknown error'
         }`,
       )
@@ -142,7 +200,7 @@ export class WalletProviderPrivy implements WalletProvider {
       }
 
       // Get public client for gas estimation
-      const publicClient = this.verbs.chainManager.getPublicClient(130) // Unichain
+      const publicClient = this.verbs.chainManager.getPublicClient(84532) // Base Sepolia
 
       // Estimate gas limit
       const gasLimit = await publicClient.estimateGas({
@@ -166,7 +224,7 @@ export class WalletProviderPrivy implements WalletProvider {
         to: transactionData.to,
         data: transactionData.data as `0x${string}`,
         value: transactionData.value as `0x${string}`,
-        chainId: 130, // Unichain
+        chainId: 84532, // Base Sepolia
         type: 2, // EIP-1559
         gasLimit: `0x${gasLimit.toString(16)}`,
         maxFeePerGas: `0x${(feeData.maxFeePerGas || BigInt(1000000000)).toString(16)}`, // fallback to 1 gwei
@@ -174,9 +232,6 @@ export class WalletProviderPrivy implements WalletProvider {
         nonce: `0x${nonce.toString(16)}`, // Explicitly provide the correct nonce
       }
 
-      console.log(
-        `[PRIVY_PROVIDER] Complete tx params - Type: ${txParams.type}, Nonce: ${nonce}, Limit: ${gasLimit}, MaxFee: ${feeData.maxFeePerGas || 'fallback'}, Priority: ${feeData.maxPriorityFeePerGas || 'fallback'}`,
-      )
 
       const response = await this.privy.walletApi.ethereum.signTransaction({
         walletId,
