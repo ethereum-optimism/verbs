@@ -1,8 +1,8 @@
 import { chainById } from '@eth-optimism/viem/chains'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useAuth, useUser } from '@clerk/clerk-react'
-import { useWallets, usePrivy } from '@privy-io/react-auth'
+import { useWallets, usePrivy, type WalletWithMetadata, useUser as usePrivyUser, useSessionSigners } from '@privy-io/react-auth'
 import type {
   CreateWalletResponse,
   GetAllWalletsResponse,
@@ -12,6 +12,7 @@ import NavBar from './NavBar'
 import { ClerkAuthButton } from './ClerkAuthButton'
 import { verbsApi } from '../api/verbsApi'
 import type { Address } from 'viem'
+import { env } from '../envVars'
 
 interface TerminalLine {
   id: string
@@ -110,9 +111,20 @@ const Terminal = () => {
   // Privy wallet hooks
   const { wallets } = useWallets()
   const { authenticated: privyAuthenticated } = usePrivy()
+  const { user: privyUser } = usePrivyUser()
+  const { addSessionSigners } = useSessionSigners();
+  const ethereumEmbeddedWallets = useMemo<WalletWithMetadata[]>(
+    () =>
+      (privyUser?.linkedAccounts?.filter(
+        (account) =>
+          account.type === "wallet" &&
+          account.walletClientType === "privy" &&
+          account.chainType === "ethereum"
+      ) as WalletWithMetadata[]) ?? [],
+    [privyUser]
+  );
 
   const [selectedVaultIndex, setSelectedVaultIndex] = useState(0)
-
 
   // Auto-select wallet when Privy is authenticated and has wallets
   useEffect(() => {
@@ -478,6 +490,38 @@ const Terminal = () => {
       selectedWallet.id === user.id
     )
   }
+
+  const addSessionSigner = useCallback(
+    async (walletAddress: string) => {
+      if (!env.VITE_SESSION_SIGNER_ID) {
+        console.error("SESSION_SIGNER_ID must be defined to addSessionSigner");
+        return;
+      }
+      console.log("Adding session signer for wallet:", env.VITE_SESSION_SIGNER_ID);
+
+      try {
+        await addSessionSigners({
+          address: walletAddress,
+          signers: [
+            {
+              signerId: env.VITE_SESSION_SIGNER_ID,
+            },
+          ],
+        });
+        console.log("Session signer added for wallet:", walletAddress);
+      } catch (error) {
+        console.error("Error adding session signer:", error);
+      }
+    },
+    [addSessionSigners]
+  );
+
+  useEffect(() => {
+    const undelegatedEthereumEmbeddedWallets = ethereumEmbeddedWallets.filter(wallet => wallet.delegated !== true);
+    undelegatedEthereumEmbeddedWallets.forEach(wallet => {
+      addSessionSigner(wallet.address)
+    })
+  }, [ethereumEmbeddedWallets])
 
   // Helper function to show auth wallet error message
   const showAuthWalletError = () => {
