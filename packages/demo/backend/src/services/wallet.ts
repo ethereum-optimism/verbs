@@ -1,3 +1,4 @@
+import { DynamicEvmWalletClient } from '@dynamic-labs-wallet/node-evm'
 import type {
   SmartWallet,
   TokenBalance,
@@ -270,4 +271,13 @@ export async function sendTokens(
   }
 
   return wallet.sendTokens(amount, 'usdc', recipientAddress)
+}
+
+export const authenticatedDynamicEvmClient = async () => {
+  const client = new DynamicEvmWalletClient({
+    authToken: process.env.DYNAMIC_AUTH_TOKEN!,
+    environmentId: process.env.DYNAMIC_ENVIRONMENT_ID!,
+  })
+  await client.authenticateApiToken(process.env.DYNAMIC_AUTH_TOKEN!)
+  return client
 }
