@@ -3,7 +3,6 @@ import { getAddress } from 'viem'
 import type {
   CreateSmartWalletOptions,
   GetSmartWalletOptions,
-  HostedWalletToVerbsWalletOptions,
 } from '@/types/wallet.js'
 import type { SmartWallet } from '@/wallet/base/SmartWallet.js'
 import type { Wallet } from '@/wallet/base/Wallet.js'
@@ -16,7 +15,7 @@ import type { SmartWalletProvider } from '@/wallet/providers/base/SmartWalletPro
  * Provides a unified interface for all wallet operations while supporting pluggable providers.
  */
 export class WalletProvider<
-  H extends HostedWalletProvider,
+  H extends HostedWalletProvider<any>,
   S extends SmartWalletProvider = SmartWalletProvider,
 > {
   constructor(
@@ -58,7 +57,7 @@ export class WalletProvider<
   }
 
   async hostedWalletToVerbsWallet(
-    params: HostedWalletToVerbsWalletOptions,
+    params: Parameters<H['toVerbsWallet']>[0],
   ): Promise<Wallet> {
     return this.hostedWalletProvider.toVerbsWallet(params)
   }
