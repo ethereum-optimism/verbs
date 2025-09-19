@@ -1,13 +1,12 @@
+import { ChainId } from '@morpho-org/blue-sdk'
 import { MetaMorphoAction } from '@morpho-org/blue-sdk-viem'
 import type { Address } from 'viem'
 import { encodeFunctionData, erc20Abi, formatUnits } from 'viem'
-import { baseSepolia } from 'viem/chains'
 
 import { DEFAULT_VERBS_CONFIG } from '@/constants/config.js'
 import type { ChainManager } from '@/services/ChainManager.js'
-import { findMarketInAllowlist } from '@/utils/config.js'
 
-import type { SupportedChainId } from '../../../constants/supportedChains.js'
+import { SUPPORTED_CHAIN_IDS as VERBS_SUPPORTED_CHAIN_IDS, type SupportedChainId } from '../../../constants/supportedChains.js'
 import type {
   LendMarket,
   LendMarketId,
@@ -19,27 +18,22 @@ import { LendProvider } from '../../provider.js'
 import { findBestVaultForAsset, getVault, getVaults } from './sdk.js'
 
 /**
- * Supported networks for Morpho lending
+ * Supported chain IDs for Morpho lending
+ * @description Array of chain IDs where Morpho is available
  */
-export const SUPPORTED_NETWORKS = {
-  UNICHAIN: {
-    chainId: 130,
-    name: 'Unichain',
-    morphoAddress: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb' as Address,
-  },
-  BASE_SEPOLIA: {
-    chainId: baseSepolia.id,
-    name: 'Base Sepolia',
-    morphoAddress: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb',
-  },
-} as const
+export const SUPPORTED_CHAIN_IDS = [
+  ...Object.values(ChainId).filter(
+    (value): value is number => typeof value === 'number',
+  ),
+  ...VERBS_SUPPORTED_CHAIN_IDS,
+] as readonly number[]
 
 /**
  * Morpho lending provider implementation
  * @description Lending provider implementation using Morpho protocol
  */
 export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
-  protected readonly SUPPORTED_NETWORKS = SUPPORTED_NETWORKS
+  protected readonly SUPPORTED_CHAIN_IDS = SUPPORTED_CHAIN_IDS
 
   private chainManager: ChainManager
 
@@ -62,12 +56,12 @@ export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
    * @param options - Optional lending configuration
    * @returns Promise resolving to lending transaction details
    */
-  async lend(
+  protected async _lend(
     asset: Address,
     amount: bigint,
+    chainId: number,
     marketId?: string,
     options?: LendOptions,
-    chainId?: SupportedChainId,
   ): Promise<LendTransaction> {
     try {
       // 1. Find suitable vault if marketId not provided
@@ -78,7 +72,7 @@ export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
       // 2. Get vault information for APY
       const vaultInfo = await this.getMarket({
         address: selectedVaultAddress,
-        chainId: chainId || (130 as SupportedChainId), // TODO: Get chain ID dynamically
+        chainId: chainId as SupportedChainId,
       })
 
       // 3. Generate real call data for Morpho deposit
@@ -132,25 +126,6 @@ export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
   }
 
   /**
-   * Deposit assets to a Morpho market (alias for lend)
-   * @description Supplies assets to a Morpho market using MetaMorpho deposit operation
-   * @param asset - Asset token address to deposit
-   * @param amount - Amount to deposit (in wei)
-   * @param marketId - Optional specific market ID (vault address)
-   * @param options - Optional deposit configuration
-   * @returns Promise resolving to deposit transaction details
-   */
-  async deposit(
-    asset: Address,
-    amount: bigint,
-    marketId?: string,
-    options?: LendOptions,
-    chainId?: SupportedChainId,
-  ): Promise<LendTransaction> {
-    return this.lend(asset, amount, marketId, options, chainId)
-  }
-
-  /**
    * Withdraw assets from a Morpho market
    * @description Withdraws assets from a Morpho market using Blue_Withdraw operation
    * @param asset - Asset token address to withdraw
@@ -159,15 +134,16 @@ export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
    * @param options - Optional withdrawal configuration
    * @returns Promise resolving to withdrawal transaction details
    */
-  async withdraw(
+  protected async _withdraw(
     asset: Address,
     amount: bigint,
+    chainId: number,
     marketId?: string,
     options?: LendOptions,
   ): Promise<LendTransaction> {
     // TODO: Implement withdrawal functionality
 
-    const _unused = { asset, amount, marketId, options }
+    const _unused = { asset, amount, chainId, marketId, options }
     throw new Error('Withdraw functionality not yet implemented')
   }
 
@@ -176,17 +152,10 @@ export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
    * @param marketId - Market identifier containing address and chainId
    * @returns Promise resolving to market information
    */
-  async getMarket(marketId: LendMarketId): Promise<LendMarket> {
-    // Check if market is in allowlist
-    const config = findMarketInAllowlist(this._config.marketAllowlist, marketId)
-    if (!config) {
-      throw new Error(`Vault ${marketId.address} not found in market allowlist`)
-    }
-
+  protected async _getMarket(marketId: LendMarketId): Promise<LendMarket> {
     return getVault({
       marketId,
       chainManager: this.chainManager,
-      marketAllowlist: this._config.marketAllowlist,
     })
   }
 
@@ -194,14 +163,8 @@ export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
    * Get list of available lending markets
    * @returns Promise resolving to array of market information
    */
-  async getMarkets(): Promise<LendMarket[]> {
-    if (
-      !this._config.marketAllowlist ||
-      this._config.marketAllowlist.length === 0
-    ) {
-      throw new Error('Market allowlist is required and cannot be empty')
-    }
-    return getVaults(this.chainManager, this._config.marketAllowlist)
+  protected async _getMarkets(): Promise<LendMarket[]> {
+    return getVaults(this.chainManager, this._config)
   }
 
   /**
@@ -210,7 +173,7 @@ export class LendProviderMorpho extends LendProvider<MorphoLendConfig> {
    * @param walletAddress - User wallet address to check balance for
    * @returns Promise resolving to market balance information
    */
-  async getMarketBalance(
+  protected async _getMarketBalance(
     marketId: LendMarketId,
     walletAddress: Address,
   ): Promise<{
