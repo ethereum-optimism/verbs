@@ -1,8 +1,26 @@
+import { useState } from 'react'
 import NavBar from './NavBar'
+import PrivyLogo from '../assets/privy-logo-white.svg'
+import DynamicLogo from '../assets/dynamic-logo-white.svg'
+import TurnkeyLogo from '../assets/turnkey-logo-white.svg'
+import { colors } from '../constants/colors'
 
 function Home() {
+  const [selectedPackageManager, setSelectedPackageManager] = useState('npm')
+  const [selectedWalletProvider, setSelectedWalletProvider] = useState('privy')
+  const [selectedPrivyTab, setSelectedPrivyTab] = useState('frontend')
+  const [selectedDynamicTab, setSelectedDynamicTab] = useState('frontend')
+  const [selectedTurnkeyTab, setSelectedTurnkeyTab] = useState('frontend')
+
+  const packageManagers = {
+    npm: 'npm install @ethereum-optimism/actions',
+    pnpm: 'pnpm add @ethereum-optimism/actions',
+    yarn: 'yarn add @ethereum-optimism/actions',
+    bun: 'bun add @ethereum-optimism/actions',
+    deno: 'deno add @ethereum-optimism/actions',
+  }
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#121113' }}>
+    <div className="min-h-screen" style={{ backgroundColor: colors.bg.dark }}>
       <NavBar />
 
       {/* ASCII Art - Isolated from other styles */}
@@ -11,7 +29,7 @@ function Home() {
           style={{
             fontFamily:
               'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono", "Courier New", monospace',
-            color: '#b8bb26',
+            color: colors.actionsRed,
             whiteSpace: 'pre',
             lineHeight: '0.75',
             letterSpacing: '0',
@@ -33,6 +51,20 @@ function Home() {
  ░░░░░   ░░░░░  ░░░░░░     ░░░░░  ░░░░░  ░░░░░░  ░░░░ ░░░░░ ░░░░░░
      `}</div>
       </div>
+      <div className="text-center pb-8">
+        <p className="text-gray-400 text-lg">
+          By{' '}
+          <a
+            href="https://www.optimism.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: colors.actionsRed, fontWeight: 'bold' }}
+            className="hover:opacity-80"
+          >
+            Optimism
+          </a>
+        </p>
+      </div>
 
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-6">
@@ -43,7 +75,7 @@ function Home() {
               style={{
                 fontFamily:
                   '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                color: '#d1d5db',
+                color: 'white',
               }}
             >
               Perform <span className="font-semibold">DeFi</span> actions with
@@ -55,14 +87,34 @@ function Home() {
                 href="https://github.com/ethereum-optimism/actions"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-200 inline-block text-center"
+                className="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-200 inline-flex items-center justify-center gap-2"
               >
-                Docs
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+                Github
               </a>
               <a
                 href="/demo"
-                className="border border-gray-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 inline-block text-center"
+                className="border border-gray-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 inline-flex items-center justify-center gap-2"
               >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
                 Demo
               </a>
             </div>
@@ -72,14 +124,25 @@ function Home() {
         {/* Code Example */}
         <div className="py-16">
           <div className="max-w-4xl mx-auto mb-8">
-            <h2 className="text-lg font-medium text-gray-300 mb-4">Overview</h2>
-            <div className="h-px bg-gradient-to-r from-gray-600 via-gray-500 to-transparent"></div>
+            <h2 className="text-3xl font-medium text-gray-300 mb-4">
+              Overview
+            </h2>
+            <div className="h-px bg-gradient-to-r from-gray-600 via-gray-500 to-transparent mb-4"></div>
+            <p className="text-gray-300 mb-4">
+              <span style={{ color: colors.actionsRed, fontWeight: 'bold' }}>
+                Actions
+              </span>{' '}
+              is an open source SDK for onchain actions: <strong>Lend</strong>,{' '}
+              <strong>Borrow</strong>, <strong>Swap</strong>,{' '}
+              <strong>Pay</strong>, without managing complex infrastructure or
+              custody.
+            </p>
           </div>
           <div
             className="rounded-lg overflow-hidden max-w-4xl mx-auto shadow-2xl"
             style={{
-              backgroundColor: '#1a1b1e',
-              border: '1px solid rgba(184, 187, 38, 0.1)',
+              backgroundColor: colors.bg.code,
+              border: '1px solid rgba(80, 73, 69, 0.3)',
               boxShadow:
                 '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(184, 187, 38, 0.05)',
             }}
@@ -88,7 +151,7 @@ function Home() {
             <div
               className="px-4 py-3 border-b flex items-center justify-between"
               style={{
-                backgroundColor: '#0f1011',
+                backgroundColor: colors.bg.header,
                 borderColor: 'rgba(184, 187, 38, 0.15)',
                 backdropFilter: 'blur(10px)',
               }}
@@ -96,23 +159,23 @@ function Home() {
               <div className="flex items-center space-x-2">
                 <div
                   className="w-3 h-3 rounded-full shadow-sm"
-                  style={{ backgroundColor: '#ff5f56' }}
+                  style={{ backgroundColor: colors.macos.red }}
                 ></div>
                 <div
                   className="w-3 h-3 rounded-full shadow-sm"
-                  style={{ backgroundColor: '#ffbd2e' }}
+                  style={{ backgroundColor: colors.macos.yellow }}
                 ></div>
                 <div
                   className="w-3 h-3 rounded-full shadow-sm"
                   style={{
-                    backgroundColor: 'rgb(184, 187, 38)',
+                    backgroundColor: colors.macos.green,
                     boxShadow: '0 0 6px rgba(184, 187, 38, 0.4)',
                   }}
                 ></div>
               </div>
               <div
                 className="text-xs font-mono"
-                style={{ color: 'rgba(184, 187, 38, 0.7)' }}
+                style={{ color: colors.syntax.keyword }}
               >
                 example.ts
               </div>
@@ -120,145 +183,175 @@ function Home() {
             {/* Code content */}
             <div
               className="p-8 text-left"
-              style={{ backgroundColor: '#1a1b1e' }}
+              style={{ backgroundColor: colors.bg.code }}
             >
               <pre className="text-sm leading-relaxed font-mono">
-                <code style={{ color: '#e8e3d3' }}>
+                <code style={{ color: colors.text.primary }}>
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`import`}</span>
                   {` { `}
-                  <span style={{ color: '#4db6ac' }}>{`Actions`}</span>
-                  {` } `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
-                  >{`from`}</span>
+                    style={{ color: colors.syntax.variable }}
+                  >{`Actions`}</span>
+                  {` } `}
+                  <span style={{ color: colors.syntax.keyword }}>{`from`}</span>
                   {` `}
                   <span
-                    style={{ color: '#ff8a65' }}
-                  >{`'@eth-optimism/actions-sdk'`}</span>
+                    style={{ color: colors.syntax.string }}
+                  >{`'@eth-optimism/actions'`}</span>
                   {`
 `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`import`}</span>
                   {` { `}
-                  <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
-                  {`, `}
-                  <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
-                  {`, `}
-                  <span style={{ color: '#4db6ac' }}>{`WBTC`}</span>
-                  {` } `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
-                  >{`from`}</span>
+                    style={{ color: colors.syntax.variable }}
+                  >{`USDC`}</span>
+                  {`, `}
+                  <span style={{ color: colors.syntax.variable }}>{`ETH`}</span>
+                  {`, `}
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`WBTC`}</span>
+                  {` } `}
+                  <span style={{ color: colors.syntax.keyword }}>{`from`}</span>
                   {` `}
                   <span
-                    style={{ color: '#ff8a65' }}
-                  >{`'@eth-optimism/actions-sdk/assets'`}</span>
+                    style={{ color: colors.syntax.string }}
+                  >{`'@eth-optimism/actions/assets'`}</span>
                   {`
 
 `}
                   <span
-                    style={{ color: 'rgb(98, 114, 164)' }}
+                    style={{ color: colors.syntax.comment }}
                   >{`// gas sponsored smart wallets`}</span>
                   {`
 `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`const`}</span>
                   {` `}
-                  <span style={{ color: '#4db6ac' }}>{`wallet`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`wallet`}</span>
                   {` = `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`await`}</span>
                   {` `}
-                  <span style={{ color: '#4db6ac' }}>{`Actions`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`Actions`}</span>
                   {`.`}
-                  <span style={{ color: '#4db6ac' }}>{`createWallet`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`createWallet`}</span>
                   {`(`}
                   <span
-                    style={{ color: '#ff8a65' }}
+                    style={{ color: colors.syntax.string }}
                   >{`'user@example.com'`}</span>
                   {`)
 
 `}
                   <span
-                    style={{ color: 'rgb(98, 114, 164)' }}
+                    style={{ color: colors.syntax.comment }}
                   >{`// onramp to stables`}</span>
                   {`
 `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`await`}</span>
                   {` `}
-                  <span style={{ color: '#4db6ac' }}>{`wallet`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`wallet`}</span>
                   {`.`}
-                  <span style={{ color: '#4db6ac' }}>{`fund`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`fund`}</span>
                   {`(`}
-                  <span style={{ color: '#ce9178' }}>{`1000`}</span>
+                  <span style={{ color: colors.syntax.number }}>{`1000`}</span>
                   {`, `}
-                  <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`USDC`}</span>
                   {`)
 
 `}
                   <span
-                    style={{ color: 'rgb(98, 114, 164)' }}
+                    style={{ color: colors.syntax.comment }}
                   >{`// earn DeFi yield`}</span>
                   {`
 `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`await`}</span>
                   {` `}
-                  <span style={{ color: '#4db6ac' }}>{`wallet`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`wallet`}</span>
                   {`.`}
-                  <span style={{ color: '#4db6ac' }}>{`lend`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`lend`}</span>
                   {`(`}
-                  <span style={{ color: '#ce9178' }}>{`100`}</span>
+                  <span style={{ color: colors.syntax.number }}>{`100`}</span>
                   {`, `}
-                  <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`USDC`}</span>
                   {`)
 
 `}
                   <span
-                    style={{ color: 'rgb(98, 114, 164)' }}
+                    style={{ color: colors.syntax.comment }}
                   >{`// borrow against collateral`}</span>
                   {`
 `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`await`}</span>
                   {` `}
-                  <span style={{ color: '#4db6ac' }}>{`wallet`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`wallet`}</span>
                   {`.`}
-                  <span style={{ color: '#4db6ac' }}>{`borrow`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`borrow`}</span>
                   {`(`}
-                  <span style={{ color: '#ce9178' }}>{`0.01`}</span>
+                  <span style={{ color: colors.syntax.number }}>{`0.01`}</span>
                   {`, `}
-                  <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                  <span style={{ color: colors.syntax.variable }}>{`ETH`}</span>
                   {`)
 
 `}
                   <span
-                    style={{ color: 'rgb(98, 114, 164)' }}
+                    style={{ color: colors.syntax.comment }}
                   >{`// swap tokens`}</span>
                   {`
 `}
                   <span
-                    style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >{`await`}</span>
                   {` `}
-                  <span style={{ color: '#4db6ac' }}>{`wallet`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`wallet`}</span>
                   {`.`}
-                  <span style={{ color: '#4db6ac' }}>{`swap`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`swap`}</span>
                   {`(`}
-                  <span style={{ color: '#ce9178' }}>{`0.01`}</span>
+                  <span style={{ color: colors.syntax.number }}>{`0.01`}</span>
                   {`, `}
-                  <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                  <span style={{ color: colors.syntax.variable }}>{`ETH`}</span>
                   {`, `}
-                  <span style={{ color: '#4db6ac' }}>{`WBTC`}</span>
+                  <span
+                    style={{ color: colors.syntax.variable }}
+                  >{`WBTC`}</span>
                   {`)`}
                 </code>
               </pre>
@@ -269,58 +362,20 @@ function Home() {
         {/* Features Section */}
         <div className="py-16">
           <div className="max-w-4xl mx-auto mb-8">
-            <h2 className="text-lg font-medium text-gray-300 mb-4">Features</h2>
+            <h2 className="text-3xl font-medium text-gray-300 mb-4">
+              Features
+            </h2>
             <div className="h-px bg-gradient-to-r from-gray-600 via-gray-500 to-transparent"></div>
           </div>
 
           {/* Core Capabilities Grid */}
           <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="mb-3 flex justify-center">
                   <svg
                     className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="font-semibold mb-2 text-white">Fund</h3>
-                <p className="text-gray-300 text-sm">Onramp to stables</p>
-              </div>
-              <div className="text-center">
-                <div className="mb-3 flex justify-center">
-                  <svg
-                    className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                    />
-                  </svg>
-                </div>
-                <h3 className="font-semibold mb-2 text-white">Earn</h3>
-                <p className="text-gray-300 text-sm">Earn DeFi yield</p>
-              </div>
-              <div className="text-center">
-                <div className="mb-3 flex justify-center">
-                  <svg
-                    className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
+                    style={{ color: colors.syntax.keyword }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -334,33 +389,13 @@ function Home() {
                   </svg>
                 </div>
                 <h3 className="font-semibold mb-2 text-white">Lend</h3>
-                <p className="text-gray-300 text-sm">Lend via Morpho</p>
+                <p className="text-gray-300 text-base">Lend across markets</p>
               </div>
               <div className="text-center">
                 <div className="mb-3 flex justify-center">
                   <svg
                     className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                    />
-                  </svg>
-                </div>
-                <h3 className="font-semibold mb-2 text-white">Swap</h3>
-                <p className="text-gray-300 text-sm">Trade via Uniswap</p>
-              </div>
-              <div className="text-center">
-                <div className="mb-3 flex justify-center">
-                  <svg
-                    className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
+                    style={{ color: colors.syntax.keyword }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -374,13 +409,35 @@ function Home() {
                   </svg>
                 </div>
                 <h3 className="font-semibold mb-2 text-white">Borrow</h3>
-                <p className="text-gray-300 text-sm">Borrow via Morpho</p>
+                <p className="text-gray-300 text-base">
+                  Borrow against collateral
+                </p>
               </div>
               <div className="text-center">
                 <div className="mb-3 flex justify-center">
                   <svg
                     className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
+                    style={{ color: colors.syntax.keyword }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                    />
+                  </svg>
+                </div>
+                <h3 className="font-semibold mb-2 text-white">Swap</h3>
+                <p className="text-gray-300 text-base">Trade via Dex</p>
+              </div>
+              <div className="text-center">
+                <div className="mb-3 flex justify-center">
+                  <svg
+                    className="w-8 h-8"
+                    style={{ color: colors.syntax.keyword }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -394,13 +451,13 @@ function Home() {
                   </svg>
                 </div>
                 <h3 className="font-semibold mb-2 text-white">Wallet</h3>
-                <p className="text-gray-300 text-sm">Create smart wallets</p>
+                <p className="text-gray-300 text-base">Create smart wallets</p>
               </div>
               <div className="text-center">
                 <div className="mb-3 flex justify-center">
                   <svg
                     className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
+                    style={{ color: colors.syntax.keyword }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -414,13 +471,13 @@ function Home() {
                   </svg>
                 </div>
                 <h3 className="font-semibold mb-2 text-white">Gas Paymaster</h3>
-                <p className="text-gray-300 text-sm">Sponsor transactions</p>
+                <p className="text-gray-300 text-base">Sponsor transactions</p>
               </div>
               <div className="text-center">
                 <div className="mb-3 flex justify-center">
                   <svg
                     className="w-8 h-8"
-                    style={{ color: 'rgb(184, 187, 38)' }}
+                    style={{ color: colors.syntax.keyword }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -429,12 +486,20 @@ function Home() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={1.5}
-                      d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                     />
                   </svg>
                 </div>
-                <h3 className="font-semibold mb-2 text-white">Fullstack SDK</h3>
-                <p className="text-gray-300 text-sm">Front to back</p>
+                <h3 className="font-semibold mb-2 text-white">Config</h3>
+                <p className="text-gray-300 text-base">
+                  Flexible configuration
+                </p>
               </div>
             </div>
           </div>
@@ -442,17 +507,109 @@ function Home() {
           {/* Getting Started Subsection */}
           <div className="pt-24 pb-16">
             <div className="max-w-4xl mx-auto mb-8">
-              <h2 className="text-lg font-medium text-gray-300 mb-4">
+              <h2 className="text-3xl font-medium text-gray-300 mb-4">
                 Getting Started
               </h2>
-              <div className="h-px bg-gradient-to-r from-gray-600 via-gray-500 to-transparent"></div>
-            </div>
-            <div className="max-w-4xl mx-auto">
+              <div className="h-px bg-gradient-to-r from-gray-600 via-gray-500 to-transparent mb-8"></div>
+              <h3 className="text-lg font-medium text-gray-300 mb-4">
+                Install the library
+              </h3>
               <div
-                className="rounded-lg overflow-hidden shadow-2xl"
+                className="rounded-lg overflow-hidden mb-8 shadow-2xl"
                 style={{
-                  backgroundColor: '#1a1b1e',
-                  border: '1px solid rgba(184, 187, 38, 0.1)',
+                  backgroundColor: colors.bg.code,
+                  boxShadow:
+                    '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(184, 187, 38, 0.05)',
+                }}
+              >
+                {/* Tab switcher */}
+                <div
+                  className="flex border-b"
+                  style={{
+                    backgroundColor: colors.bg.header,
+                    borderColor: 'rgba(184, 187, 38, 0.15)',
+                  }}
+                >
+                  {Object.keys(packageManagers).map((pm) => (
+                    <button
+                      key={pm}
+                      onClick={() => setSelectedPackageManager(pm)}
+                      className={`px-4 py-2 text-sm font-medium transition-colors ${
+                        selectedPackageManager === pm
+                          ? 'text-white border-b-2'
+                          : 'text-gray-400 hover:text-gray-300'
+                      }`}
+                      style={{
+                        borderColor:
+                          selectedPackageManager === pm
+                            ? 'rgb(184, 187, 38)'
+                            : 'transparent',
+                      }}
+                    >
+                      {pm}
+                    </button>
+                  ))}
+                </div>
+                {/* Code content */}
+                <div
+                  className="p-8 text-left relative"
+                  style={{ backgroundColor: colors.bg.code }}
+                >
+                  <pre className="text-sm leading-relaxed font-mono">
+                    <code style={{ color: colors.text.primary }}>
+                      <span style={{ color: 'rgba(184, 187, 38, 0.9)' }}>
+                        {
+                          packageManagers[
+                            selectedPackageManager as keyof typeof packageManagers
+                          ].split(' ')[0]
+                        }
+                      </span>
+                      {` ${packageManagers[selectedPackageManager as keyof typeof packageManagers].split(' ').slice(1).join(' ')}`}
+                    </code>
+                  </pre>
+                  {/* Copy button */}
+                  <button
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        packageManagers[
+                          selectedPackageManager as keyof typeof packageManagers
+                        ],
+                      )
+                    }
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors"
+                    aria-label="Copy command"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <h3 className="text-lg font-medium text-gray-300 mb-2">
+                Configure{' '}
+                <span style={{ color: colors.actionsRed, fontWeight: 'bold' }}>
+                  Actions
+                </span>
+              </h3>
+              <p className="text-gray-300 text-base mb-4">
+                Pick which DeFi protocols, markets, networks, assets, and
+                providers you want to support.
+              </p>
+              <div
+                className="rounded-lg overflow-hidden mb-8 shadow-2xl"
+                style={{
+                  backgroundColor: colors.bg.code,
                   boxShadow:
                     '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(184, 187, 38, 0.05)',
                 }}
@@ -461,7 +618,7 @@ function Home() {
                 <div
                   className="px-4 py-3 border-b flex items-center justify-between"
                   style={{
-                    backgroundColor: '#0f1011',
+                    backgroundColor: colors.bg.header,
                     borderColor: 'rgba(184, 187, 38, 0.15)',
                     backdropFilter: 'blur(10px)',
                   }}
@@ -469,11 +626,11 @@ function Home() {
                   <div className="flex items-center space-x-2">
                     <div
                       className="w-3 h-3 rounded-full shadow-sm"
-                      style={{ backgroundColor: '#ff5f56' }}
+                      style={{ backgroundColor: colors.macos.red }}
                     ></div>
                     <div
                       className="w-3 h-3 rounded-full shadow-sm"
-                      style={{ backgroundColor: '#ffbd2e' }}
+                      style={{ backgroundColor: colors.macos.yellow }}
                     ></div>
                     <div
                       className="w-3 h-3 rounded-full shadow-sm"
@@ -485,292 +642,2225 @@ function Home() {
                   </div>
                   <div
                     className="text-xs font-mono"
-                    style={{ color: 'rgba(184, 187, 38, 0.7)' }}
+                    style={{ color: colors.syntax.keyword }}
                   >
                     config.ts
                   </div>
                 </div>
                 {/* Code content */}
                 <div
-                  className="p-8 text-left"
-                  style={{ backgroundColor: '#1a1b1e' }}
+                  className="p-8 text-left relative"
+                  style={{ backgroundColor: colors.bg.code }}
                 >
                   <pre className="text-sm leading-relaxed font-mono">
-                    <code style={{ color: '#e8e3d3' }}>
+                    <code style={{ color: colors.text.primary }}>
                       <span
-                        style={{ color: 'rgba(184, 187, 38, 0.9)' }}
+                        style={{ color: colors.syntax.keyword }}
+                      >{`import`}</span>
+                      {` { `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
+                      {`, `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
+                      {`, `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`WBTC`}</span>
+                      {`, `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDT`}</span>
+                      {` } `}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`from`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'@eth-optimism/actions/assets'`}</span>
+                      {`
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`import`}</span>
+                      {` { `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleMorphoMarket`}</span>
+                      {`, `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleAaveMarket`}</span>
+                      {` } `}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`from`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'@eth-optimism/actions/markets'`}</span>
+                      {`
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`import`}</span>
+                      {` { `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`unichain`}</span>
+                      {`, `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`optimism`}</span>
+                      {`, `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`base`}</span>
+                      {` } `}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`from`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'viem/chains'`}</span>
+                      {`
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`import`}</span>
+                      {` { `}
+                      <span
+                        style={{ color: colors.syntax.function }}
+                      >{`getPrivyClient`}</span>
+                      {` } `}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`from`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'privy'`}</span>
+                      {`
+
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
                       >{`const`}</span>
                       {` `}
-                      <span style={{ color: '#4db6ac' }}>{`config`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`config`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`ActionsConfig`}</span>
+                      <span
+                        style={{ color: '#8ec07c' }}
+                      >{`ActionsConfig`}</span>
                       {` = {
   `}
-                      <span style={{ color: '#9cdcfe' }}>{`wallet`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`wallet`}</span>
                       {`: {
     `}
-                      <span style={{ color: '#9cdcfe' }}>{`type`}</span>
-                      {`: `}
-                      <span style={{ color: '#ff8a65' }}>{`'privy'`}</span>
-                      {`, `}
                       <span
-                        style={{ color: 'rgb(98, 114, 164)' }}
-                      >{`// Wallet Provider`}</span>
-                      {`
-    `}
-                      <span style={{ color: '#9cdcfe' }}>{`appId`}</span>
+                        style={{ color: colors.syntax.property }}
+                      >{`hostedWalletConfig`}</span>
+                      {`: {
+      `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`provider`}</span>
+                      {`: {
+        `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`type`}</span>
                       {`: `}
                       <span
-                        style={{ color: '#ff8a65' }}
-                      >{`'your-privy-app-id'`}</span>
+                        style={{ color: colors.syntax.string }}
+                      >{`'privy'`}</span>
                       {`,
-    `}
-                      <span style={{ color: '#9cdcfe' }}>{`appSecret`}</span>
+        `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`config`}</span>
+                      {`: {
+          `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`privyClient`}</span>
                       {`: `}
                       <span
-                        style={{ color: '#ff8a65' }}
-                      >{`'your-privy-app-secret'`}</span>
-                      {`
+                        style={{ color: colors.syntax.function }}
+                      >{`getPrivyClient`}</span>
+                      {`(),
+        },
+      },
+    },
+    `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`smartWalletConfig`}</span>
+                      {`: {
+      `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`provider`}</span>
+                      {`: {
+        `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`type`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'default'`}</span>
+                      {`,
+        `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`attributionSuffix`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'actions'`}</span>
+                      {`,
+      },
+    },
   },
   `}
-                      <span style={{ color: '#9cdcfe' }}>{`gas`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`lend`}</span>
                       {`: {
     `}
-                      <span style={{ color: '#9cdcfe' }}>{`type`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`type`}</span>
                       {`: `}
-                      <span style={{ color: '#ff8a65' }}>{`'privy'`}</span>
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'morpho'`}</span>
                       {`, `}
                       <span
-                        style={{ color: 'rgb(98, 114, 164)' }}
-                      >{`// Gas Provider`}</span>
-                      {`
-  },
-  `}
-                      <span style={{ color: '#9cdcfe' }}>{`lend`}</span>
-                      {`: {
-    `}
-                      <span style={{ color: '#9cdcfe' }}>{`type`}</span>
-                      {`: `}
-                      <span style={{ color: '#ff8a65' }}>{`'morpho'`}</span>
-                      {`, `}
-                      <span
-                        style={{ color: 'rgb(98, 114, 164)' }}
+                        style={{ color: colors.syntax.comment }}
                       >{`// Lend Provider`}</span>
                       {`
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`assetAllowlist`}</span>
                       {`: [`}
-                      <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
                       {`, `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {`, `}
-                      <span style={{ color: '#4db6ac' }}>{`WBTC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`WBTC`}</span>
                       {`],
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`assetBlocklist`}</span>
                       {`: [`}
-                      <span style={{ color: '#4db6ac' }}>{`USDT`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDT`}</span>
                       {`],
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`marketAllowlist`}</span>
                       {`: [`}
-                      <span style={{ color: '#ff8a65' }}>{`0x123...`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleMorphoMarket`}</span>
                       {`],
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`marketBlocklist`}</span>
                       {`: [`}
-                      <span style={{ color: '#ff8a65' }}>{`0xabc...`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleAaveMarket`}</span>
                       {`],
   },
   `}
-                      <span style={{ color: '#9cdcfe' }}>{`borrow`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`borrow`}</span>
                       {`: {
     `}
-                      <span style={{ color: '#9cdcfe' }}>{`type`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`type`}</span>
                       {`: `}
-                      <span style={{ color: '#ff8a65' }}>{`'morpho'`}</span>
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'morpho'`}</span>
                       {`, `}
                       <span
-                        style={{ color: 'rgb(98, 114, 164)' }}
+                        style={{ color: colors.syntax.comment }}
                       >{`// Borrow Provider`}</span>
                       {`
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`assetAllowlist`}</span>
                       {`: [`}
-                      <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
                       {`, `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {`, `}
-                      <span style={{ color: '#4db6ac' }}>{`WBTC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`WBTC`}</span>
                       {`],
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`assetBlocklist`}</span>
                       {`: [`}
-                      <span style={{ color: '#4db6ac' }}>{`USDT`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDT`}</span>
                       {`],
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`marketAllowlist`}</span>
                       {`: [`}
-                      <span style={{ color: '#ff8a65' }}>{`0x123...`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleMorphoMarket`}</span>
                       {`],
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`marketBlocklist`}</span>
                       {`: [`}
-                      <span style={{ color: '#ff8a65' }}>{`0xabc...`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleAaveMarket`}</span>
                       {`],
   },
   `}
-                      <span style={{ color: '#9cdcfe' }}>{`swap`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`swap`}</span>
                       {`: {
     `}
-                      <span style={{ color: '#9cdcfe' }}>{`type`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`type`}</span>
                       {`: `}
-                      <span style={{ color: '#ff8a65' }}>{`'uniswap'`}</span>
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'uniswap'`}</span>
                       {`, `}
                       <span
-                        style={{ color: 'rgb(98, 114, 164)' }}
+                        style={{ color: colors.syntax.comment }}
                       >{`// Swap Provider`}</span>
                       {`
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`defaultSlippage`}</span>
                       {`: `}
-                      <span style={{ color: '#ce9178' }}>{`100`}</span>
+                      <span
+                        style={{ color: colors.syntax.number }}
+                      >{`100`}</span>
                       {`,
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`assetAllowList`}</span>
                       {`: [`}
-                      <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
                       {`, `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {`, `}
-                      <span style={{ color: '#4db6ac' }}>{`WBTC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`WBTC`}</span>
                       {`]
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`marketAllowlist`}</span>
                       {`: [
       { `}
-                      <span style={{ color: '#9cdcfe' }}>{`from`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`from`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {`, `}
-                      <span style={{ color: '#9cdcfe' }}>{`to`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`to`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
                       {` },
       { `}
-                      <span style={{ color: '#9cdcfe' }}>{`from`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`from`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
                       {`, `}
-                      <span style={{ color: '#9cdcfe' }}>{`to`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`to`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {` },
       { `}
-                      <span style={{ color: '#9cdcfe' }}>{`from`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`from`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {`, `}
-                      <span style={{ color: '#9cdcfe' }}>{`to`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`to`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`WBTC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`WBTC`}</span>
                       {` },
       { `}
-                      <span style={{ color: '#9cdcfe' }}>{`from`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`from`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`WBTC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`WBTC`}</span>
                       {`, `}
-                      <span style={{ color: '#9cdcfe' }}>{`to`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`to`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {` }
     ],
     `}
                       <span
-                        style={{ color: '#9cdcfe' }}
+                        style={{ color: colors.syntax.property }}
                       >{`marketBlocklist`}</span>
                       {`: [
       { `}
-                      <span style={{ color: '#9cdcfe' }}>{`from`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`from`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {`, `}
-                      <span style={{ color: '#9cdcfe' }}>{`to`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`to`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
                       {` },
       { `}
-                      <span style={{ color: '#9cdcfe' }}>{`from`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`from`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`USDC`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
                       {`, `}
-                      <span style={{ color: '#9cdcfe' }}>{`to`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`to`}</span>
                       {`: `}
-                      <span style={{ color: '#4db6ac' }}>{`ETH`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
                       {` },
     ],
   },
   `}
-                      <span style={{ color: '#9cdcfe' }}>{`price`}</span>
-                      {`: {
-    `}
-                      <span style={{ color: '#9cdcfe' }}>{`type`}</span>
-                      {`: `}
-                      <span style={{ color: '#ff8a65' }}>{`'coingecko'`}</span>
-                      {`, `}
                       <span
-                        style={{ color: 'rgb(98, 114, 164)' }}
-                      >{`// Price provider`}</span>
-                      {`
-    `}
-                      <span style={{ color: '#9cdcfe' }}>{`apiKey`}</span>
-                      {`: `}
-                      <span style={{ color: '#ff8a65' }}>{`'...'`}</span>
-                      {`,
-  }
-  `}
-                      <span
-                        style={{ color: 'rgb(98, 114, 164)' }}
+                        style={{ color: colors.syntax.comment }}
                       >{`// Chain Provider`}</span>
                       {`
   `}
-                      <span style={{ color: '#9cdcfe' }}>{`chains`}</span>
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`chains`}</span>
                       {`: [
       `}
-                      <span style={{ color: '#4db6ac' }}>{`unichain`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`unichain`}</span>
                       {`,
       `}
-                      <span style={{ color: '#4db6ac' }}>{`optimism`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`optimism`}</span>
                       {`,
       `}
-                      <span style={{ color: '#4db6ac' }}>{`base`}</span>
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`base`}</span>
                       {`
   ]
 }`}
                     </code>
                   </pre>
+                  {/* Copy button */}
+                  <button
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        `import { USDC, ETH, WBTC, USDT } from '@eth-optimism/actions/assets'
+import { ExampleMorphoMarket, ExampleAaveMarket } from '@eth-optimism/actions/markets'
+import { unichain, optimism, base } from 'viem/chains'
+import { getPrivyClient } from 'privy'
+
+const config: ActionsConfig = {
+  wallet: {
+    hostedWalletConfig: {
+      provider: {
+        type: 'privy',
+        config: {
+          privyClient: getPrivyClient(),
+        },
+      },
+    },
+    smartWalletConfig: {
+      provider: {
+        type: 'default',
+        // converts to '0xee4a2159c53ceed04edf4ce23cc97c5c'
+        attributionSuffix: 'actions',
+      },
+    },
+  },
+  lend: {
+    type: 'morpho', // Lend Provider
+    assetAllowlist: [USDC, ETH, WBTC],
+    assetBlocklist: [USDT],
+    marketAllowlist: [ExampleMorphoMarket],
+    marketBlocklist: [ExampleAaveMarket],
+  },
+  borrow: {
+    type: 'morpho', // Borrow Provider
+    assetAllowlist: [USDC, ETH, WBTC],
+    assetBlocklist: [USDT],
+    marketAllowlist: [ExampleMorphoMarket],
+    marketBlocklist: [ExampleAaveMarket],
+  },
+  swap: {
+    type: 'uniswap', // Swap Provider
+    defaultSlippage: 100,
+    assetAllowList: [USDC, ETH, WBTC]
+    marketAllowlist: [
+      { from: ETH, to: USDC },
+      { from: USDC, to: ETH },
+      { from: ETH, to: WBTC },
+      { from: WBTC, to: ETH }
+    ],
+    marketBlocklist: [
+      { from: ETH, to: USDC },
+      { from: USDC, to: ETH },
+    ],
+  },
+  // Chain Provider
+  chains: [
+      unichain,
+      optimism,
+      base
+  ]
+}`,
+                      )
+                    }
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors"
+                    aria-label="Copy code"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <h3 className="text-lg font-medium text-gray-300 mb-2">
+                BYO Wallet
+              </h3>
+              <p className="text-gray-300 text-base mb-4">
+                Actions supports your existing hosted wallet provider.
+              </p>
+              <div
+                className="rounded-lg overflow-hidden mb-8 shadow-2xl"
+                style={{
+                  backgroundColor: colors.bg.code,
+                  boxShadow:
+                    '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(184, 187, 38, 0.05)',
+                }}
+              >
+                {/* Tab switcher with logos */}
+                <div
+                  className="flex border-b"
+                  style={{
+                    backgroundColor: colors.bg.code,
+                    borderColor: 'rgba(184, 187, 38, 0.15)',
+                  }}
+                >
+                  <button
+                    onClick={() => setSelectedWalletProvider('privy')}
+                    className={`w-1/3 px-6 py-4 transition-colors flex items-center justify-center border-b-2 ${
+                      selectedWalletProvider === 'privy'
+                        ? ''
+                        : 'opacity-50 hover:opacity-75'
+                    }`}
+                    style={{
+                      borderColor:
+                        selectedWalletProvider === 'privy'
+                          ? 'rgb(184, 187, 38)'
+                          : 'transparent',
+                    }}
+                  >
+                    <img
+                      src={PrivyLogo}
+                      alt="Privy"
+                      className="h-8 w-auto object-contain"
+                    />
+                  </button>
+                  <button
+                    onClick={() => setSelectedWalletProvider('dynamic')}
+                    className={`w-1/3 px-6 py-4 transition-colors flex items-center justify-center border-b-2 ${
+                      selectedWalletProvider === 'dynamic'
+                        ? ''
+                        : 'opacity-50 hover:opacity-75'
+                    }`}
+                    style={{
+                      borderColor:
+                        selectedWalletProvider === 'dynamic'
+                          ? 'rgb(184, 187, 38)'
+                          : 'transparent',
+                    }}
+                  >
+                    <img
+                      src={DynamicLogo}
+                      alt="Dynamic"
+                      className="h-8 w-auto object-contain"
+                    />
+                  </button>
+                  <button
+                    onClick={() => setSelectedWalletProvider('turnkey')}
+                    className={`w-1/3 px-6 py-4 transition-colors flex items-center justify-center border-b-2 ${
+                      selectedWalletProvider === 'turnkey'
+                        ? ''
+                        : 'opacity-50 hover:opacity-75'
+                    }`}
+                    style={{
+                      borderColor:
+                        selectedWalletProvider === 'turnkey'
+                          ? 'rgb(184, 187, 38)'
+                          : 'transparent',
+                    }}
+                  >
+                    <img
+                      src={TurnkeyLogo}
+                      alt="Turnkey"
+                      className="h-8 w-auto object-contain"
+                    />
+                  </button>
+                </div>
+
+                {/* Content for each provider */}
+                <div className="p-8" style={{ backgroundColor: '#32302f' }}>
+                  {selectedWalletProvider === 'privy' && (
+                    <div className="space-y-6">
+                      <div>
+                        <p className="text-gray-300 text-base mb-4">
+                          1.{' '}
+                          <a
+                            href="https://docs.privy.io/basics/react/installation"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 underline"
+                          >
+                            Install
+                          </a>{' '}
+                          and setup Privy.
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-gray-300 mb-2">
+                          2. Create user wallet and extend it with DeFi{' '}
+                          <span
+                            style={{
+                              color: colors.actionsRed,
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Actions
+                          </span>
+                          :
+                        </p>
+                        <div
+                          className="rounded-lg overflow-hidden"
+                          style={{
+                            backgroundColor: colors.bg.code,
+                          }}
+                        >
+                          {/* Frontend/Backend tabs */}
+                          <div
+                            className="flex border-b"
+                            style={{ borderColor: 'rgba(184, 187, 38, 0.15)' }}
+                          >
+                            <button
+                              onClick={() => setSelectedPrivyTab('frontend')}
+                              className="px-6 py-3 text-sm font-mono transition-colors border-b-2"
+                              style={{
+                                backgroundColor: colors.bg.header,
+                                color:
+                                  selectedPrivyTab === 'frontend'
+                                    ? colors.text.primary
+                                    : colors.text.secondary,
+                                borderColor:
+                                  selectedPrivyTab === 'frontend'
+                                    ? 'rgb(184, 187, 38)'
+                                    : 'transparent',
+                                opacity:
+                                  selectedPrivyTab === 'frontend' ? 1 : 0.6,
+                              }}
+                            >
+                              Frontend
+                            </button>
+                            <button
+                              onClick={() => setSelectedPrivyTab('backend')}
+                              className="px-6 py-3 text-sm font-mono transition-colors border-b-2"
+                              style={{
+                                backgroundColor: colors.bg.header,
+                                color:
+                                  selectedPrivyTab === 'backend'
+                                    ? colors.text.primary
+                                    : colors.text.secondary,
+                                borderColor:
+                                  selectedPrivyTab === 'backend'
+                                    ? 'rgb(184, 187, 38)'
+                                    : 'transparent',
+                                opacity:
+                                  selectedPrivyTab === 'backend' ? 1 : 0.6,
+                              }}
+                            >
+                              Backend
+                            </button>
+                          </div>
+                          {/* Terminal header */}
+                          <div
+                            className="px-4 py-3 border-b flex items-center justify-between"
+                            style={{
+                              backgroundColor: colors.bg.header,
+                              borderColor: 'rgba(184, 187, 38, 0.15)',
+                              backdropFilter: 'blur(10px)',
+                            }}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{ backgroundColor: colors.macos.red }}
+                              ></div>
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{ backgroundColor: colors.macos.yellow }}
+                              ></div>
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{
+                                  backgroundColor: 'rgb(184, 187, 38)',
+                                  boxShadow: '0 0 6px rgba(184, 187, 38, 0.4)',
+                                }}
+                              ></div>
+                            </div>
+                            <div
+                              className="text-xs font-mono"
+                              style={{ color: colors.syntax.keyword }}
+                            >
+                              wallet.ts
+                            </div>
+                          </div>
+                          <div className="relative">
+                            {selectedPrivyTab === 'frontend' && (
+                              <pre
+                                className="text-sm leading-relaxed font-mono p-4"
+                                style={{ backgroundColor: colors.bg.code }}
+                              >
+                                <code style={{ color: colors.text.primary }}>
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`import`}</span>
+                                  {` {`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`useWallets`}</span>
+                                  {`} `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`from`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'@privy-io/react-auth'`}</span>
+                                  {`
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` { `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallets`}</span>
+                                  {` } = `}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`useWallets`}</span>
+                                  {`()
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`embeddedWallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallets`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`find`}</span>
+                                  {`(
+  (`}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {`) => `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`walletClientType`}</span>
+                                  {` === `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'privy'`}</span>
+                                  {`,
+)
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`await`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`actions`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`hostedWalletToActionsWallet`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`connectedWallet`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`embeddedWallet`}</span>
+                                  {`,
+})`}
+                                </code>
+                              </pre>
+                            )}
+                            {selectedPrivyTab === 'backend' && (
+                              <pre
+                                className="text-sm leading-relaxed font-mono p-4"
+                                style={{ backgroundColor: colors.bg.code }}
+                              >
+                                <code style={{ color: colors.text.primary }}>
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`import`}</span>
+                                  {` { `}
+                                  <span
+                                    style={{ color: '#8ec07c' }}
+                                  >{`PrivyClient`}</span>
+                                  {` } `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`from`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'@privy-io/server-auth'`}</span>
+                                  {`
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`privyClient`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`new`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: '#8ec07c' }}
+                                  >{`PrivyClient`}</span>
+                                  {`(`}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`env`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`PRIVY_APP_ID`}</span>
+                                  {`, `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`env`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`PRIVY_APP_SECRET`}</span>
+                                  {`)
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`privyWallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`await`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`privyClient`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`walletApi`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`createWallet`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`chainType`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'ethereum'`}</span>
+                                  {`,
+})
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`await`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`actions`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`hostedWalletToActionsWallet`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`walletId`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`privyWallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`id`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`address`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`privyWallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`address`}</span>
+                                  {`,
+})`}
+                                </code>
+                              </pre>
+                            )}
+                            {/* Copy button */}
+                            <button
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  selectedPrivyTab === 'frontend'
+                                    ? `import {useWallets} from '@privy-io/react-auth'
+
+const { wallets } = useWallets()
+const embeddedWallet = wallets.find(
+  (wallet) => wallet.walletClientType === 'privy',
+)
+
+const actionsWallet = await actions.wallet.hostedWalletToActionsWallet({
+  connectedWallet: embeddedWallet,
+})`
+                                    : `import { PrivyClient } from '@privy-io/server-auth'
+
+const privyClient = new PrivyClient(env.PRIVY_APP_ID, env.PRIVY_APP_SECRET)
+
+const privyWallet = await privyClient.walletApi.createWallet({
+  chainType: 'ethereum',
+})
+
+const wallet = await actions.wallet.hostedWalletToActionsWallet({
+  walletId: privyWallet.id,
+  address: privyWallet.address,
+})`,
+                                )
+                              }
+                              className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors"
+                              aria-label="Copy code"
+                            >
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedWalletProvider === 'dynamic' && (
+                    <div className="space-y-6">
+                      <div>
+                        <p className="text-gray-300 text-base mb-4">
+                          1.{' '}
+                          <a
+                            href="https://www.dynamic.xyz/docs/wallets/embedded-wallets/mpc/setup"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 underline"
+                          >
+                            Install
+                          </a>{' '}
+                          and setup Dynamic.
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-gray-300 mb-2">
+                          2. Create user wallet and extend it with DeFi{' '}
+                          <span
+                            style={{
+                              color: colors.actionsRed,
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Actions
+                          </span>
+                          :
+                        </p>
+                        <div
+                          className="rounded-lg overflow-hidden"
+                          style={{
+                            backgroundColor: colors.bg.code,
+                          }}
+                        >
+                          {/* Frontend/Backend tabs */}
+                          <div
+                            className="flex border-b"
+                            style={{ borderColor: 'rgba(184, 187, 38, 0.15)' }}
+                          >
+                            <button
+                              onClick={() => setSelectedDynamicTab('frontend')}
+                              className="px-6 py-3 text-sm font-mono transition-colors border-b-2"
+                              style={{
+                                backgroundColor: colors.bg.header,
+                                color:
+                                  selectedDynamicTab === 'frontend'
+                                    ? colors.text.primary
+                                    : colors.text.secondary,
+                                borderColor:
+                                  selectedDynamicTab === 'frontend'
+                                    ? 'rgb(184, 187, 38)'
+                                    : 'transparent',
+                                opacity:
+                                  selectedDynamicTab === 'frontend' ? 1 : 0.6,
+                              }}
+                            >
+                              Frontend
+                            </button>
+                            <button
+                              disabled
+                              className="px-6 py-3 text-sm font-mono transition-colors border-b-2 cursor-not-allowed"
+                              style={{
+                                backgroundColor: colors.bg.header,
+                                color: colors.text.secondary,
+                                borderColor: 'transparent',
+                                opacity: 0.3,
+                              }}
+                            >
+                              Backend
+                            </button>
+                          </div>
+                          {/* Terminal header */}
+                          <div
+                            className="px-4 py-3 border-b flex items-center justify-between"
+                            style={{
+                              backgroundColor: colors.bg.header,
+                              borderColor: 'rgba(184, 187, 38, 0.15)',
+                              backdropFilter: 'blur(10px)',
+                            }}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{ backgroundColor: colors.macos.red }}
+                              ></div>
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{ backgroundColor: colors.macos.yellow }}
+                              ></div>
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{
+                                  backgroundColor: 'rgb(184, 187, 38)',
+                                  boxShadow: '0 0 6px rgba(184, 187, 38, 0.4)',
+                                }}
+                              ></div>
+                            </div>
+                            <div
+                              className="text-xs font-mono"
+                              style={{ color: colors.syntax.keyword }}
+                            >
+                              wallet.ts
+                            </div>
+                          </div>
+                          <div className="relative">
+                            <pre
+                              className="text-sm leading-relaxed font-mono p-4"
+                              style={{ backgroundColor: colors.bg.code }}
+                            >
+                              <code style={{ color: colors.text.primary }}>
+                                <span
+                                  style={{ color: colors.syntax.keyword }}
+                                >{`import`}</span>
+                                {` { `}
+                                <span
+                                  style={{ color: colors.syntax.function }}
+                                >{`useDynamicContext`}</span>
+                                {` } `}
+                                <span
+                                  style={{ color: colors.syntax.keyword }}
+                                >{`from`}</span>
+                                {` `}
+                                <span
+                                  style={{ color: colors.syntax.string }}
+                                >{`"@dynamic-labs/sdk-react-core"`}</span>
+                                {`
+
+`}
+                                <span
+                                  style={{ color: colors.syntax.keyword }}
+                                >{`const`}</span>
+                                {` { `}
+                                <span
+                                  style={{ color: colors.syntax.variable }}
+                                >{`primaryWallet`}</span>
+                                {` } = `}
+                                <span
+                                  style={{ color: colors.syntax.function }}
+                                >{`useDynamicContext`}</span>
+                                {`()
+
+`}
+                                <span
+                                  style={{ color: colors.syntax.keyword }}
+                                >{`const`}</span>
+                                {` `}
+                                <span
+                                  style={{ color: colors.syntax.variable }}
+                                >{`wallet`}</span>
+                                {` = `}
+                                <span
+                                  style={{ color: colors.syntax.keyword }}
+                                >{`await`}</span>
+                                {` `}
+                                <span
+                                  style={{ color: colors.syntax.variable }}
+                                >{`actions`}</span>
+                                {`.`}
+                                <span
+                                  style={{ color: colors.syntax.variable }}
+                                >{`wallet`}</span>
+                                {`.`}
+                                <span
+                                  style={{ color: colors.syntax.function }}
+                                >{`hostedWalletToVerbsWallet`}</span>
+                                {`({
+  `}
+                                <span
+                                  style={{ color: colors.syntax.property }}
+                                >{`wallet`}</span>
+                                {`: `}
+                                <span
+                                  style={{ color: colors.syntax.variable }}
+                                >{`primaryWallet`}</span>
+                                {`,
+})`}
+                              </code>
+                            </pre>
+                            {/* Copy button */}
+                            <button
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  `import { useDynamicContext } from "@dynamic-labs/sdk-react-core"
+
+const { primaryWallet } = useDynamicContext()
+
+const verbsDynamicWallet = await actions.wallet.hostedWalletToVerbsWallet({
+  wallet: primaryWallet,
+})`,
+                                )
+                              }
+                              className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors"
+                              aria-label="Copy code"
+                            >
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedWalletProvider === 'turnkey' && (
+                    <div className="space-y-6">
+                      <div>
+                        <p className="text-gray-300 text-base mb-4">
+                          1.{' '}
+                          <a
+                            href="https://docs.turnkey.com/sdks/react/getting-started"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-400 hover:text-blue-300 underline"
+                          >
+                            Install
+                          </a>{' '}
+                          and setup Turnkey.
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-gray-300 mb-2">
+                          2. Create user wallet and extend it with DeFi{' '}
+                          <span
+                            style={{
+                              color: colors.actionsRed,
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Actions
+                          </span>
+                          :
+                        </p>
+                        <div
+                          className="rounded-lg overflow-hidden"
+                          style={{
+                            backgroundColor: colors.bg.code,
+                          }}
+                        >
+                          {/* Frontend/Backend tabs */}
+                          <div
+                            className="flex border-b"
+                            style={{ borderColor: 'rgba(184, 187, 38, 0.15)' }}
+                          >
+                            <button
+                              onClick={() => setSelectedTurnkeyTab('frontend')}
+                              className="px-6 py-3 text-sm font-mono transition-colors border-b-2"
+                              style={{
+                                backgroundColor: colors.bg.header,
+                                color:
+                                  selectedTurnkeyTab === 'frontend'
+                                    ? colors.text.primary
+                                    : colors.text.secondary,
+                                borderColor:
+                                  selectedTurnkeyTab === 'frontend'
+                                    ? 'rgb(184, 187, 38)'
+                                    : 'transparent',
+                                opacity:
+                                  selectedTurnkeyTab === 'frontend' ? 1 : 0.6,
+                              }}
+                            >
+                              Frontend
+                            </button>
+                            <button
+                              onClick={() => setSelectedTurnkeyTab('backend')}
+                              className="px-6 py-3 text-sm font-mono transition-colors border-b-2"
+                              style={{
+                                backgroundColor: colors.bg.header,
+                                color:
+                                  selectedTurnkeyTab === 'backend'
+                                    ? colors.text.primary
+                                    : colors.text.secondary,
+                                borderColor:
+                                  selectedTurnkeyTab === 'backend'
+                                    ? 'rgb(184, 187, 38)'
+                                    : 'transparent',
+                                opacity:
+                                  selectedTurnkeyTab === 'backend' ? 1 : 0.6,
+                              }}
+                            >
+                              Backend
+                            </button>
+                          </div>
+                          {/* Terminal header */}
+                          <div
+                            className="px-4 py-3 border-b flex items-center justify-between"
+                            style={{
+                              backgroundColor: colors.bg.header,
+                              borderColor: 'rgba(184, 187, 38, 0.15)',
+                              backdropFilter: 'blur(10px)',
+                            }}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{ backgroundColor: colors.macos.red }}
+                              ></div>
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{ backgroundColor: colors.macos.yellow }}
+                              ></div>
+                              <div
+                                className="w-3 h-3 rounded-full shadow-sm"
+                                style={{
+                                  backgroundColor: 'rgb(184, 187, 38)',
+                                  boxShadow: '0 0 6px rgba(184, 187, 38, 0.4)',
+                                }}
+                              ></div>
+                            </div>
+                            <div
+                              className="text-xs font-mono"
+                              style={{ color: colors.syntax.keyword }}
+                            >
+                              wallet.ts
+                            </div>
+                          </div>
+                          <div className="relative">
+                            {selectedTurnkeyTab === 'frontend' && (
+                              <pre
+                                className="text-sm leading-relaxed font-mono p-4"
+                                style={{ backgroundColor: colors.bg.code }}
+                              >
+                                <code style={{ color: colors.text.primary }}>
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`import`}</span>
+                                  {` { `}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`useTurnkey`}</span>
+                                  {` } `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`from`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`"@turnkey/react-wallet-kit"`}</span>
+                                  {`
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` { `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallets`}</span>
+                                  {`, `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`createWallet`}</span>
+                                  {`, `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`refreshWallets`}</span>
+                                  {`, `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`httpClient`}</span>
+                                  {`, `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`session`}</span>
+                                  {` } = `}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`useTurnkey`}</span>
+                                  {`()
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`turnkeyWallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`await`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`createWallet`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`walletName`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`\`My New Wallet \${Math.random()}\``}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`accounts`}</span>
+                                  {`: [`}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`"ADDRESS_FORMAT_ETHEREUM"`}</span>
+                                  {`],
+})
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`walletAddress`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`accounts`}</span>
+                                  {`[`}
+                                  <span
+                                    style={{ color: colors.syntax.number }}
+                                  >{`0`}</span>
+                                  {`].`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`address`}</span>
+                                  {`
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`await`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`actions`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`hostedWalletToActionsWallet`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`client`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`httpClient`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`organizationId`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`session`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`organizationId`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`signWith`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`walletAddress`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`ethereumAddress`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`walletAddress`}</span>
+                                  {`,
+})`}
+                                </code>
+                              </pre>
+                            )}
+                            {selectedTurnkeyTab === 'backend' && (
+                              <pre
+                                className="text-sm leading-relaxed font-mono p-4"
+                                style={{ backgroundColor: colors.bg.code }}
+                              >
+                                <code style={{ color: colors.text.primary }}>
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`import`}</span>
+                                  {` { `}
+                                  <span
+                                    style={{ color: '#8ec07c' }}
+                                  >{`Turnkey`}</span>
+                                  {` } `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`from`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'@turnkey/sdk-server'`}</span>
+                                  {`
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`turnkeyClient`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`new`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: '#8ec07c' }}
+                                  >{`Turnkey`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`apiBaseUrl`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'https://api.turnkey.com'`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`apiPublicKey`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`env`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`TURNKEY_API_KEY`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`apiPrivateKey`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`env`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`TURNKEY_API_SECRET`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`defaultOrganizationId`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`env`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`TURNKEY_ORGANIZATION_ID`}</span>
+                                  {`,
+})
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`turnkeyWallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`await`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`turnkeyClient`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`apiClient`}</span>
+                                  {`().`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`createWallet`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`walletName`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'ETH Wallet'`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`accounts`}</span>
+                                  {`: [{
+    `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`curve`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'CURVE_SECP256K1'`}</span>
+                                  {`,
+    `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`pathFormat`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'PATH_FORMAT_BIP32'`}</span>
+                                  {`,
+    `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`path`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`"m/44'/60'/0'/0/0"`}</span>
+                                  {`,
+    `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`addressFormat`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.string }}
+                                  >{`'ADDRESS_FORMAT_ETHEREUM'`}</span>
+                                  {`,
+  }],
+})
+
+`}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`const`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {` = `}
+                                  <span
+                                    style={{ color: colors.syntax.keyword }}
+                                  >{`await`}</span>
+                                  {` `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`actions`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`wallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.function }}
+                                  >{`hostedWalletToActionsWallet`}</span>
+                                  {`({
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`organizationId`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`turnkeyWallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`activity`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`organizationId`}</span>
+                                  {`,
+  `}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`signWith`}</span>
+                                  {`: `}
+                                  <span
+                                    style={{ color: colors.syntax.variable }}
+                                  >{`turnkeyWallet`}</span>
+                                  {`.`}
+                                  <span
+                                    style={{ color: colors.syntax.property }}
+                                  >{`addresses`}</span>
+                                  {`[`}
+                                  <span
+                                    style={{ color: colors.syntax.number }}
+                                  >{`0`}</span>
+                                  {`],
+})`}
+                                </code>
+                              </pre>
+                            )}
+                            {/* Copy button */}
+                            <button
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  selectedTurnkeyTab === 'frontend'
+                                    ? `import { useTurnkey } from "@turnkey/react-wallet-kit"
+
+const { wallets, createWallet, refreshWallets, httpClient, session } = useTurnkey()
+
+const wallet = await createWallet({
+  walletName: \`My New Wallet \${Math.random()}\`,
+  accounts: ["ADDRESS_FORMAT_ETHEREUM"],
+})
+
+const walletAddress = wallet.accounts[0].address
+
+const actionsWallet = await actions.wallet.hostedWalletToActionsWallet({
+  client: httpClient,
+  organizationId: session.organizationId,
+  signWith: walletAddress,
+  ethereumAddress: walletAddress,
+})`
+                                    : `import { Turnkey } from '@turnkey/sdk-server'
+
+const turnkeyClient = new Turnkey({
+  apiBaseUrl: 'https://api.turnkey.com',
+  apiPublicKey: env.TURNKEY_API_KEY,
+  apiPrivateKey: env.TURNKEY_API_SECRET,
+  defaultOrganizationId: env.TURNKEY_ORGANIZATION_ID,
+})
+
+const turnkeyWallet = await turnkeyClient.apiClient().createWallet({
+  walletName: 'ETH Wallet',
+  accounts: [{
+    curve: 'CURVE_SECP256K1',
+    pathFormat: 'PATH_FORMAT_BIP32',
+    path: "m/44'/60'/0'/0/0",
+    addressFormat: 'ADDRESS_FORMAT_ETHEREUM',
+  }],
+})
+
+const wallet = await actions.wallet.hostedWalletToActionsWallet({
+  organizationId: turnkeyWallet.activity.organizationId,
+  signWith: turnkeyWallet.addresses[0],
+})`,
+                                )
+                              }
+                              className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors"
+                              aria-label="Copy code"
+                            >
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <h3 className="text-lg font-medium text-gray-300 mb-2">
+                Take Action
+              </h3>
+              <p className="text-gray-300 text-base mb-4">
+                Lend, Borrow, Swap, or Send.
+              </p>
+              <div
+                className="rounded-lg overflow-hidden mb-8 shadow-2xl"
+                style={{
+                  backgroundColor: colors.bg.code,
+                  boxShadow:
+                    '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(184, 187, 38, 0.05)',
+                }}
+              >
+                {/* Terminal header */}
+                <div
+                  className="px-4 py-3 border-b flex items-center justify-between"
+                  style={{
+                    backgroundColor: colors.bg.header,
+                    borderColor: 'rgba(184, 187, 38, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                  }}
+                >
+                  <div className="flex items-center space-x-2">
+                    <div
+                      className="w-3 h-3 rounded-full shadow-sm"
+                      style={{ backgroundColor: colors.macos.red }}
+                    ></div>
+                    <div
+                      className="w-3 h-3 rounded-full shadow-sm"
+                      style={{ backgroundColor: colors.macos.yellow }}
+                    ></div>
+                    <div
+                      className="w-3 h-3 rounded-full shadow-sm"
+                      style={{
+                        backgroundColor: 'rgb(184, 187, 38)',
+                        boxShadow: '0 0 6px rgba(184, 187, 38, 0.4)',
+                      }}
+                    ></div>
+                  </div>
+                  <div
+                    className="text-xs font-mono"
+                    style={{ color: colors.syntax.keyword }}
+                  >
+                    wallet.ts
+                  </div>
+                </div>
+                {/* Code content */}
+                <div
+                  className="p-8 text-left relative"
+                  style={{ backgroundColor: colors.bg.code }}
+                >
+                  <pre className="text-sm leading-relaxed font-mono">
+                    <code style={{ color: colors.text.primary }}>
+                      <span
+                        style={{ color: colors.syntax.comment }}
+                      >{`// Enable asset lending in DeFi`}</span>
+                      {`
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`const`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`receipt1`}</span>
+                      {` = `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`wallet`}</span>
+                      {`.`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`lend`}</span>
+                      {`.`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`openPosition`}</span>
+                      {`({
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`amount`}</span>
+                      {`: `}
+                      <span style={{ color: colors.syntax.number }}>{`1`}</span>
+                      {`,
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`asset`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
+                      {`,
+  ...`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleMorphoMarket`}</span>
+                      {`
+})
+
+`}
+                      <span
+                        style={{ color: colors.syntax.comment }}
+                      >{`// Use lent assets as collateral`}</span>
+                      {`
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`const`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`receipt2`}</span>
+                      {` = `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`wallet`}</span>
+                      {`.`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`borrow`}</span>
+                      {`.`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`openPosition`}</span>
+                      {`({
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`amount`}</span>
+                      {`: `}
+                      <span style={{ color: colors.syntax.number }}>{`1`}</span>
+                      {`,
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`asset`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDT`}</span>
+                      {`,
+  ...`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ExampleAaveMarket`}</span>
+                      {`
+})
+
+`}
+                      <span
+                        style={{ color: colors.syntax.comment }}
+                      >{`// Token swap via DEX of choice`}</span>
+                      {`
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`const`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`receipt3`}</span>
+                      {` = `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`wallet`}</span>
+                      {`.`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`swap`}</span>
+                      {`.`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`execute`}</span>
+                      {`({
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`amountIn`}</span>
+                      {`: `}
+                      <span style={{ color: colors.syntax.number }}>{`1`}</span>
+                      {`,
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`assetIn`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
+                      {`,
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`assetOut`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`ETH`}</span>
+                      {`,
+})
+
+`}
+                      <span
+                        style={{ color: colors.syntax.comment }}
+                      >{`// Easy, safe asset transfers`}</span>
+                      {`
+`}
+                      <span
+                        style={{ color: colors.syntax.keyword }}
+                      >{`const`}</span>
+                      {` `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`receipt4`}</span>
+                      {` = `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`wallet`}</span>
+                      {`.`}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`send`}</span>
+                      {`({
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`amount`}</span>
+                      {`: `}
+                      <span style={{ color: colors.syntax.number }}>{`1`}</span>
+                      {`,
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`asset`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.variable }}
+                      >{`USDC`}</span>
+                      {`,
+  `}
+                      <span
+                        style={{ color: colors.syntax.property }}
+                      >{`to`}</span>
+                      {`: `}
+                      <span
+                        style={{ color: colors.syntax.string }}
+                      >{`'vitalik.eth'`}</span>
+                      {`,
+})`}
+                    </code>
+                  </pre>
+                  <button
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        `// Enable asset lending in DeFi
+const receipt1 = wallet.lend.openPosition({
+  amount: 1,
+  asset: USDC,
+  ...ExampleMorphoMarket
+})
+
+// Use lent assets as collateral
+const receipt2 = wallet.borrow.openPosition({
+  amount: 1,
+  asset: USDT,
+  ...ExampleAaveMarket
+})
+
+// Token swap via DEX of choice
+const receipt3 = wallet.swap.execute({
+  amountIn: 1,
+  assetIn: USDC,
+  assetOut: ETH,
+})
+
+// Easy, safe asset transfers
+const receipt4 = wallet.send({
+  amount: 1,
+  asset: USDC,
+  to: 'vitalik.eth',
+})`,
+                      )
+                    }
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors"
+                    aria-label="Copy code"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
@@ -781,7 +2871,19 @@ function Home() {
       {/* Footer */}
       <footer className="border-t border-gray-800 py-8 text-center text-gray-400 text-sm">
         <div className="max-w-7xl mx-auto px-6">
-          <p>© 2025 Actions by Optimism. Open source. MIT License.</p>
+          <p>
+            © 2025 Actions by{' '}
+            <a
+              href="https://www.optimism.io/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: colors.actionsRed, fontWeight: 'bold' }}
+              className="hover:opacity-80"
+            >
+              Optimism
+            </a>
+            . Open source. MIT License.
+          </p>
         </div>
       </footer>
     </div>
